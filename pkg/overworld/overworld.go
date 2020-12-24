@@ -2,8 +2,8 @@ package overworld
 
 import (
 	"pokered/pkg/audio"
-	"pokered/pkg/data/worldmap/song"
 	"pokered/pkg/joypad"
+	"pokered/pkg/overworld/mscript"
 	"pokered/pkg/palette"
 	"pokered/pkg/sprite"
 	"pokered/pkg/store"
@@ -47,7 +47,7 @@ func ExecOverworld() {
 		case joypad.JoyPressed.A:
 			if offset := sprite.GetFrontSpriteOrSign(0); offset > 0 {
 				sprite.MakeNPCFacePlayer(uint(offset))
-				displayDialogue(offset)
+				DisplayDialogue(offset)
 				return
 			}
 		case joypad.JoyHeld.Down:
@@ -68,11 +68,9 @@ func ExecOverworld() {
 		directionPressed = h.Up || h.Down || h.Right || h.Left
 		if directionPressed {
 			p.WalkCounter = 16
-			sprite.UpdateSprites()
 			if sprite.CollisionCheckForPlayer() {
 				p.DeltaX, p.DeltaY = 0, 0
 			}
-			sprite.AdvancePlayerSprite()
 		} else {
 			sprite.UpdateSprites()
 			p.RightHand = false
@@ -99,6 +97,10 @@ func joypadOverworld() {
 	if len(p.Simulated) == 0 {
 		return
 	}
+	if len(p.Simulated) == 1 && p.Simulated[0] == util.Stop {
+		p.Simulated = []uint{}
+		return
+	}
 
 	switch p.Simulated[0] {
 	case util.Down:
@@ -109,18 +111,24 @@ func joypadOverworld() {
 		joypad.JoyHeld = joypad.Input{Right: true}
 	case util.Left:
 		joypad.JoyHeld = joypad.Input{Left: true}
+	case util.Stop:
+		joypad.JoyHeld = joypad.Input{}
 	}
 	if len(p.Simulated) > 1 {
 		p.Simulated = p.Simulated[1:]
 		return
 	}
-	p.Simulated = []uint{}
+	p.Simulated = []uint{util.Stop}
 }
 
 // ref: RunMapScript
 func runMapScript() {
+	doBoulderAnimation()
 	runNPCMovementScript()
+	mscript.Run(world.CurWorld.MapID)
 }
+
+func doBoulderAnimation() {}
 
 // ref: RunNPCMovementScript
 func runNPCMovementScript() {
@@ -151,25 +159,8 @@ func loadWorldData(mapID, warpID int) {
 	}
 }
 
-func displayDialogue(offset int) {
+func DisplayDialogue(offset int) {
 	texts, textID := world.CurWorld.Header.Text, offset
 	text.DisplayTextID(text.TextBoxImage, texts, textID)
 	store.SetScriptID(store.ExecText)
-}
-
-// PlayDefaultMusic 主人公の状態に応じた BGM を流す
-// ref: PlayDefaultMusic
-func PlayDefaultMusic(mapID int) {
-	musicID := song.MapMusics[mapID]
-	switch store.Player.State {
-	case store.BikeState:
-	case store.SurfState:
-	}
-
-	if musicID == audio.LastMusicID {
-		return
-	}
-
-	audio.PlayMusic(musicID)
-	audio.LastMusicID = 0
 }

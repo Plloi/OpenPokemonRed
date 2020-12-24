@@ -1,15 +1,29 @@
 package txt
 
 var OaksLabText1 = `
+${OaksLabText1}
 `
+
+// OaksLabGaryText1 SONY: Yo NINTEN! Gramps isn't around!
+var OaksLabGaryText1 = `
+${RIVAL}: Yo
+${PLAYER}! Gramps
+isn't around!
+`
+
 var OaksLabText2 = `
+${OaksLabLookAtCharmander}
 `
 var OaksLabText3 = `
+${OaksLabLookAtSquirtle}
 `
 var OaksLabText4 = `
+${OaksLabLookAtBulbasaur}
 `
 var OaksLabText5 = `
+${OaksLabText5}
 `
+
 var OaksLabText6 = `
 `
 var OaksLabText7 = `
@@ -24,8 +38,47 @@ var OaksLabText10 = `
 `
 var OaksLabText11 = `
 `
+
 var OaksLabText12 = `
+OAK: Hey! Don't go
+away yet!
 `
+
+// OaksLabReceivedMonText This #MON is
+// really energetic!
+var OaksLabReceivedMonText = `
+This #MON is
+really energetic!
+
+${OaksLabMonChoiceMenu}${SFX:get_key_item}${PLAYER} received
+a ${PStarter}!
+`
+
+var OaksLabLastMonText = `
+That's PROF.OAK's
+last #MON!
+`
+
+var OaksLabWhichMonText = `
+OAK: Now, ${PLAYER},
+which #MON do
+you want?
+`
+
+var OaksLabFightText = `
+OAK: If a wild
+#MON appears,
+your #MON can
+fight against it!
+`
+
+var OaksLabRaiseMonText = `
+OAK: <PLAYER>,
+raise your young
+#MON by making
+it fight!
+`
+
 var OaksLabText13 = `
 `
 var OaksLabText14 = `
@@ -49,7 +102,7 @@ Oh, that's right,
 I told you to
 come! Just wait!
 
-Here, <PLAYER>!
+Here, ${PLAYER}!
 
 There are 3
 #MON here!
@@ -79,6 +132,16 @@ var OaksLabText20 = `
 OAK: Be patient!
 ${RIVAL}, you can
 have one too!
+`
+
+var OaksLabRivalPickingMonText = `
+${RIVAL}: I'll take
+this one, then!
+`
+
+var OaksLabRivalReceivedMonText = `
+${SFX:get_key_item}${RIVAL} received
+a ${RStarter}!
 `
 
 var OaksLabText21 = `
@@ -115,4 +178,48 @@ var OaksLabText25 = `
 var OaksLabText26 = `
 `
 var OaksLabText27 = `
+`
+
+// OaksLabText39 Those are PokeBALLs. They...
+var OaksLabText39 = `
+Those are #
+BALLs. They
+contain #MON!
+`
+
+// OaksLabText40 SONY: Heh, I don't need to be
+var OaksLabText40 = `
+${RIVAL}: Heh, I
+don't need to be
+greedy like you!
+
+Go ahead and
+choose, ${PLAYER}!
+`
+
+var OaksLabText41 = `
+${RIVAL}: My
+#MON looks a
+lot stronger.
+`
+
+// OaksLabCharmanderText So! You want the
+var OaksLabCharmanderText = `
+So! You want the
+fire #MON,
+CHARMANDER?${OaksYesNo}
+`
+
+// OaksLabSquirtleText So! You want the
+var OaksLabSquirtleText = `
+So! You want the
+water #MON,
+SQUIRTLE?${OaksYesNo}
+`
+
+// OaksLabBulbasaurText So! You want the
+var OaksLabBulbasaurText = `
+So! You want the
+plant #MON,
+BULBASAUR?${OaksYesNo}
 `

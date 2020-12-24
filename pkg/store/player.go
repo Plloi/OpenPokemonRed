@@ -9,10 +9,12 @@ const (
 )
 
 type PlayerState struct {
-	Name  string
-	Money uint
-	Time  uint
-	State WalkBikeSurf
+	Name        string
+	Money       uint
+	Time        uint
+	State       WalkBikeSurf
+	Starter     uint
+	StarterName string
 }
 
 var Player = PlayerState{

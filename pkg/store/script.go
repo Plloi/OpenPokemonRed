@@ -1,5 +1,6 @@
 package store
 
+// ScriptID
 const (
 	Halt uint = iota
 	WhiteScreen
@@ -12,8 +13,11 @@ const (
 	WidgetNickNamingScreen
 	WidgetPartyMenu
 	WidgetPartyMenuSelect
+	TwoOptionMenu
 	WidgetStats
 	WidgetStats2
+	WidgetPokedexPage
+	WidgetStarterPokedexPage
 	FadeOutToBlack
 	FadeOutToWhite
 	LoadMapData
@@ -98,6 +102,7 @@ func SetScriptID(id uint) {
 	}
 }
 
+// SetOtScript set One Time script
 func SetOtScript(f func()) {
 	scriptQueue = ScriptQueue{
 		Buffer: [10]interface{}{f},
@@ -114,6 +119,7 @@ func PushScriptID(id uint) {
 	scriptQueue.Length++
 }
 
+// PushOtScript push One Time script
 func PushOtScript(f func()) {
 	if scriptQueue.Length == 10 {
 		return

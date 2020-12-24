@@ -1,7 +1,5 @@
 package pkmnd
 
-import "pokered/pkg/data/move"
-
 // growth rate
 const (
 	Exp600k  = iota + 1 // pred none
@@ -27,6 +25,7 @@ type PHeader struct {
 	Learnset      []uint
 	Evos          []Evo
 	LvMoves       [][2]uint // (Level, MoveID)[]
+	DexEntry      DexEntry
 }
 
 type Evo struct {
@@ -40,11 +39,13 @@ type Evo struct {
 func Header(id uint) *PHeader {
 	switch id {
 	case 1:
-		return &Bulbasaur
+		return &bulbasaur
 	case 4:
-		return &Charmander
+		return &charmander
+	case 7:
+		return &squirtle
 	case 63:
-		return &AbraHeader
+		return &abra
 	}
 	return nil
 }
@@ -54,25 +55,7 @@ func BaseStatsGen1(id uint) StatsGen1 {
 	return h.BaseStatsGen1
 }
 
-var AbraHeader = PHeader{
-	ID:            63,
-	Name:          "abra",
-	IconGen1:      MonMon,
-	BaseStatsGen1: StatsGen1{25, 20, 15, 90, 105},
-	BaseStats:     Stats{25, 20, 15, 90, 105, 55},
-	Type:          [2]uint{Psychic},
-	CatchRate:     200,
-	BaseExp:       73,
-	Lv0MoveIDs:    [4]uint{move.TELEPORT},
-	GrowthRate:    Exp1050k,
-	Learnset:      []uint{},
-	Evos: []Evo{
-		{KADABRA, 16, 0, false},
-	},
-	LvMoves: [][2]uint{},
-}
-
-var Bulbasaur = PHeader{
+var bulbasaur = PHeader{
 	ID:            1,
 	Name:          "bulbasaur",
 	IconGen1:      GrassMon,
@@ -81,24 +64,25 @@ var Bulbasaur = PHeader{
 	Type:          [2]uint{Grass, Poison},
 	CatchRate:     45,
 	BaseExp:       64,
-	Lv0MoveIDs:    [4]uint{move.TACKLE, move.GROWL},
+	Lv0MoveIDs:    [4]uint{TACKLE, GROWL},
 	GrowthRate:    Exp1050k,
 	Learnset:      []uint{},
 	Evos: []Evo{
 		{IVYSAUR, 16, 0, false},
 	},
 	LvMoves: [][2]uint{
-		{7, move.LEECH_SEED},
-		{13, move.VINE_WHIP},
-		{20, move.POISONPOWDER},
-		{27, move.RAZOR_LEAF},
-		{34, move.GROWTH},
-		{41, move.SLEEP_POWDER},
-		{48, move.SOLARBEAM},
+		{7, LEECH_SEED},
+		{13, VINE_WHIP},
+		{20, POISONPOWDER},
+		{27, RAZOR_LEAF},
+		{34, GROWTH},
+		{41, SLEEP_POWDER},
+		{48, SOLARBEAM},
 	},
+	DexEntry: bulbasaurDexEntry,
 }
 
-var Charmander = PHeader{
+var charmander = PHeader{
 	ID:            4,
 	Name:          "charmander",
 	IconGen1:      MonMon,
@@ -107,18 +91,64 @@ var Charmander = PHeader{
 	Type:          [2]uint{Fire},
 	CatchRate:     45,
 	BaseExp:       65,
-	Lv0MoveIDs:    [4]uint{move.SCRATCH, move.GROWL},
+	Lv0MoveIDs:    [4]uint{SCRATCH, GROWL},
 	GrowthRate:    Exp1050k,
 	Learnset:      []uint{},
 	Evos: []Evo{
 		{CHARMELEON, 16, 0, false},
 	},
 	LvMoves: [][2]uint{
-		{9, move.EMBER},
-		{15, move.LEER},
-		{22, move.RAGE},
-		{30, move.SLASH},
-		{38, move.FLAMETHROWER},
-		{46, move.FIRE_SPIN},
+		{9, EMBER},
+		{15, LEER},
+		{22, RAGE},
+		{30, SLASH},
+		{38, FLAMETHROWER},
+		{46, FIRE_SPIN},
 	},
+	DexEntry: charmanderDexEntry,
+}
+
+var squirtle = PHeader{
+	ID:            7,
+	Name:          "squirtle",
+	IconGen1:      WaterMon,
+	BaseStatsGen1: StatsGen1{44, 48, 65, 43, 50},
+	BaseStats:     Stats{44, 48, 65, 43, 50, 64},
+	Type:          [2]uint{Water},
+	CatchRate:     45,
+	BaseExp:       66,
+	Lv0MoveIDs:    [4]uint{TACKLE, TAIL_WHIP},
+	GrowthRate:    Exp1050k,
+	Learnset:      []uint{},
+	Evos: []Evo{
+		{WARTORTLE, 16, 0, false},
+	},
+	LvMoves: [][2]uint{
+		{8, BUBBLE},
+		{15, WATER_GUN},
+		{22, BITE},
+		{28, WITHDRAW},
+		{35, SKULL_BASH},
+		{42, HYDRO_PUMP},
+	},
+	DexEntry: squirtleDexEntry,
+}
+
+var abra = PHeader{
+	ID:            63,
+	Name:          "abra",
+	IconGen1:      MonMon,
+	BaseStatsGen1: StatsGen1{25, 20, 15, 90, 105},
+	BaseStats:     Stats{25, 20, 15, 90, 105, 55},
+	Type:          [2]uint{Psychic},
+	CatchRate:     200,
+	BaseExp:       73,
+	Lv0MoveIDs:    [4]uint{TELEPORT},
+	GrowthRate:    Exp1050k,
+	Learnset:      []uint{},
+	Evos: []Evo{
+		{KADABRA, 16, 0, false},
+	},
+	LvMoves:  [][2]uint{},
+	DexEntry: abraDexEntry,
 }

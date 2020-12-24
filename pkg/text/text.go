@@ -24,6 +24,9 @@ var InScroll bool
 var blink = "▼"
 var downArrowBlinkCnt uint = 6 * 10 // FF8B,FF8C
 
+// render text in PokeDex?
+var isDexMode = false
+
 // Blink ▼ on display
 func Blink(target *ebiten.Image, b string) {
 	if b == " " || b == "▼" {
@@ -46,8 +49,31 @@ func PrintText(target *ebiten.Image, str string) {
 	DisplayTextBoxID(target, MESSAGE_BOX)
 	Seek(1, 14)
 	CurText = preprocess(str)
+	isDexMode = false
 }
 
+func printDexText(target *ebiten.Image, str string) {
+	if target == nil {
+		TextBoxImage = util.NewImage()
+		target = TextBoxImage
+	}
+	Seek(1, 11)
+	CurText = preprocess(str)
+	isDexMode = true
+}
+
+// AppendText append text into CurText
+func AppendText(target *ebiten.Image, str string) {
+	if target == nil {
+		TextBoxImage = util.NewImage()
+		target = TextBoxImage
+	}
+	DisplayTextBoxID(target, MESSAGE_BOX)
+	Seek(1, 14)
+	CurText = preprocess(str) + CurText
+}
+
+// DoPrintTextScript set/push script printing string in text window
 func DoPrintTextScript(target *ebiten.Image, str string, doPush bool) {
 	if doPush {
 		store.PushScriptID(store.ExecText)
@@ -55,6 +81,16 @@ func DoPrintTextScript(target *ebiten.Image, str string, doPush bool) {
 		store.SetScriptID(store.ExecText)
 	}
 	PrintText(target, str)
+}
+
+// DoPrintDexTextScript set/push script printing string in Pokedex text window
+func DoPrintDexTextScript(target *ebiten.Image, str string, doPush bool) {
+	if doPush {
+		store.PushScriptID(store.ExecText)
+	} else {
+		store.SetScriptID(store.ExecText)
+	}
+	printDexText(target, str)
 }
 
 // PlaceString print string
@@ -89,11 +125,13 @@ func PlaceStringOneByOne(target *ebiten.Image, str string) string {
 	}
 
 	if len([]rune(str)) == 0 {
+		isDexMode = false
 		return str
 	}
 
 	runes := []rune(str)
 	c := string(runes[0])
+	isParaOrDone := false
 	switch c {
 	case "$":
 		lParen := strings.Index(str, "{")
@@ -104,7 +142,10 @@ func PlaceStringOneByOne(target *ebiten.Image, str string) string {
 			if value, ok := txt.RAM[key]; ok {
 				str = value() + str
 			} else if value, ok := txt.Asm[key]; ok {
-				value()
+				added := value()
+				if added != "" {
+					str = preprocess(added) + str
+				}
 			}
 			return str
 		}
@@ -117,20 +158,27 @@ func PlaceStringOneByOne(target *ebiten.Image, str string) string {
 			placeNext()
 			str = string(runes[2:])
 		case "p":
+			isParaOrDone = true
 			Blink(target, "")
 			if pressed := placePara(target); pressed {
 				str = string(runes[2:])
 				resetBlink()
 			}
 		case "c":
-			Blink(target, "")
-			if pressed := placeCont(); pressed {
-				Blink(target, " ")
-				ScrollTextUpOneLine(target)
+			if isDexMode {
+				placeNext()
 				str = string(runes[2:])
-				resetBlink()
+			} else {
+				Blink(target, "")
+				if pressed := placeCont(); pressed {
+					Blink(target, " ")
+					ScrollTextUpOneLine(target)
+					str = string(runes[2:])
+					resetBlink()
+				}
 			}
 		case "d":
+			isParaOrDone = true
 			if pressed := placeDone(); pressed {
 				TextBoxImage = nil
 				str = ""
@@ -180,6 +228,12 @@ func PlaceStringOneByOne(target *ebiten.Image, str string) string {
 		}
 		str = string(runes[1:])
 	}
+
+	// for pokedex text
+	if isDexMode && !isParaOrDone {
+		str = PlaceStringOneByOne(target, str)
+		return str
+	}
 	return str
 }
 
@@ -201,17 +255,29 @@ func placeNext() {
 	_, y := Caret()
 	Seek(1, y+2)
 }
+
 func placePara(target *ebiten.Image) bool {
 	pressed := manualTextScroll()
 	if pressed {
 		clearScreenArea(target)
 		store.DelayFrames = 20
 		Seek(1, 14)
+		if isDexMode {
+			Seek(1, 11)
+		}
 	}
 	return pressed
 }
 
 func clearScreenArea(target *ebiten.Image) {
+	if isDexMode {
+		for h := 11; h <= 16; h++ {
+			for w := 1; w < 19; w++ {
+				PlaceChar(target, " ", w, h)
+			}
+		}
+		return
+	}
 	for h := 13; h <= 16; h++ {
 		for w := 1; w < 19; w++ {
 			PlaceChar(target, " ", w, h)
@@ -263,10 +329,8 @@ func ScrollTextUpOneLine(target *ebiten.Image) {
 	maxX, maxY := util.TileToPixel(19, 17)
 	max := image.Point{maxX, maxY}
 	texts := ebiten.NewImageFromImage(target.SubImage(image.Rectangle{min, max}))
+	util.ClearScreenArea(target, 1, 14, 3, 18)
 	util.DrawImage(target, texts, 1, 13)
-	for w := 1; w < 19; w++ {
-		PlaceChar(target, " ", w, 16)
-	}
 	store.DelayFrames = 5
 	InScroll = !InScroll
 	Seek(1, 16)
@@ -309,4 +373,8 @@ func DisplayTextID(target *ebiten.Image, texts []string, textID int) {
 		return
 	}
 	PrintText(target, texts[textID])
+}
+
+func CloseTextBox() {
+	TextBoxImage = nil
 }

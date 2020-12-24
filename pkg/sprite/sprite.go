@@ -125,13 +125,20 @@ func UpdateSpriteImage(offset uint) {
 		}
 
 	// up
-	case 4, 7:
+	case 4:
 		index = 4
-	case 5, 6:
+	case 5:
 		index = 3
 		if s.RightHand {
 			index = 5
 		}
+	case 6:
+		index = 3
+		if s.RightHand {
+			index = 5
+		}
+	case 7:
+		index = 4
 
 	case 8, 11:
 		index = 6

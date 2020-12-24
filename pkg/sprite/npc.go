@@ -33,7 +33,49 @@ func UpdateNPCSprite(offset uint) {
 
 // DoScriptedNPCMovement update NPC sprite in "NPC movement script"
 func DoScriptedNPCMovement(offset uint) {
-	// TODO: implement
+	s := store.SpriteData[offset]
+
+	switch s.MovmentStatus {
+	case Movement:
+		updateSpriteInWalkingAnimation(offset)
+		return
+	}
+
+	direction := s.Simulated[0]
+	if len(s.Simulated) > 1 {
+		s.Simulated = s.Simulated[1:]
+	} else if direction != util.Stop {
+		s.Simulated = []uint{util.Stop}
+	} else {
+		s.Simulated = []uint{}
+	}
+
+	var deltaX, deltaY int
+	switch direction {
+	case util.Up:
+		deltaX, deltaY = 0, -1
+	case util.Down:
+		deltaX, deltaY = 0, 1
+	case util.Left:
+		deltaX, deltaY = -1, 0
+	case util.Right:
+		deltaX, deltaY = 1, 0
+	default:
+		deltaX, deltaY = 0, 0
+		updateSpriteInWalkingAnimation(offset)
+		return
+	}
+
+	s.Direction = direction
+
+	s.WalkCounter = 32
+	s.DeltaX, s.DeltaY = deltaX, deltaY
+
+	s.MapXCoord += deltaX
+	s.MapYCoord += deltaY
+
+	s.MovmentStatus = Movement
+	updateSpriteInWalkingAnimation(offset)
 }
 
 // If movement status is OK, try walking.
@@ -153,7 +195,7 @@ func tryWalking(offset uint, direction util.Direction, deltaX, deltaY int) bool 
 		return false
 	}
 
-	s.WalkCounter = 16
+	s.WalkCounter = 32
 	s.DeltaX, s.DeltaY = deltaX, deltaY
 
 	s.MapXCoord += deltaX
@@ -213,10 +255,17 @@ func updateSpriteMovementDelay(offset uint) {
 // increment animation counter
 func updateSpriteInWalkingAnimation(offset uint) {
 	s := store.SpriteData[offset]
-	s.ScreenXPixel += s.DeltaX
-	s.ScreenYPixel += s.DeltaY
+
+	if s.WalkCounter%2 == 0 {
+		s.ScreenXPixel += s.DeltaX
+		s.ScreenYPixel += s.DeltaY
+	}
 
 	s.WalkCounter--
+	if s.DoubleSpd {
+		s.WalkCounter--
+	}
+
 	s.AnimationFrame++
 	if s.AnimationCounter() == 4 {
 		s.AnimationFrame = 0

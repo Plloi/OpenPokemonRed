@@ -2,9 +2,11 @@ package script
 
 import (
 	"pokered/pkg/joypad"
+	"pokered/pkg/menu"
 	"pokered/pkg/store"
 	"pokered/pkg/text"
 	"pokered/pkg/util"
+	"pokered/pkg/widget"
 	"pokered/pkg/world"
 )
 
@@ -27,8 +29,11 @@ func newScriptMap() map[uint]func() {
 	result[store.WidgetRivalNamingScreen] = widgetRivalNamingScreen
 	result[store.WidgetPartyMenu] = widgetPartyMenu
 	result[store.WidgetPartyMenuSelect] = widgetPartyMenuSelect
+	result[store.TwoOptionMenu] = handleTwoOption
 	result[store.WidgetStats] = widgetStats
 	result[store.WidgetStats2] = widgetStats2
+	result[store.WidgetPokedexPage] = widgetPokedexPage
+	result[store.WidgetStarterPokedexPage] = widgetStarterPokedexPage
 	result[store.FadeOutToBlack] = fadeOutToBlack
 	result[store.FadeOutToWhite] = fadeOutToWhite
 	result[store.LoadMapData] = loadMapData
@@ -122,7 +127,11 @@ func execText() {
 		return
 	}
 
-	text.CurText = text.PlaceStringOneByOne(text.TextBoxImage, text.CurText)
+	target := text.TextBoxImage
+	if widget.DexPageScreen() != nil {
+		target = widget.DexPageScreen()
+	}
+	text.CurText = text.PlaceStringOneByOne(target, text.CurText)
 	if len([]rune(text.CurText)) == 0 {
 		nextScript()
 	}
@@ -209,4 +218,16 @@ func InOakSpeech() bool {
 func InTitle() bool {
 	scriptID := store.ScriptID()
 	return scriptID >= store.TitleCopyright && scriptID <= store.TitleMenu2
+}
+
+func handleTwoOption() {
+	m := menu.CurSelectMenu()
+	pressed := menu.HandleSelectMenuInput()
+
+	switch {
+	case pressed.A:
+		m.Close()
+		store.TwoOptionResult = m.Index()
+		store.PopScript()
+	}
 }
