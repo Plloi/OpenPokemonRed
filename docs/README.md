@@ -6,7 +6,6 @@
 
 <img src="header.png" />
 
-
 ## 🔰 Description
 
 **🚧 WARNING: This project is unofficial!! 🚧**
@@ -18,16 +17,60 @@ The ROM version is not Japanese but English.
 ## 🏜 Roadmap
 
 **This project is in the middle of development and is currently creating the underlying system part.**  
-For example, text drawing, sound playback, and combat systems.
 
-## 📽 Demo
-
-<img src="./screenshots/demo.gif" width="280px" height="280px" />
+- [x] Text engine
+- [x] Menu engine
+- [x] Sprite engine
+- [x] Statue screen
+- [x] Trainer card
+- [x] Title
+- [x] Oak speech
+- [x] Naming screen
+- [ ] Combat system
+- [ ] Wild pokemon battle
+- [ ] Trainer battle
+- [ ] Use item
+- [ ] PC
+- [ ] Pokecenter
+- [ ] Pokemart
+- [ ] Pokedex
+- [ ] Save function
+- [ ] Field move(Cut, Strength, Surf...)
 
 ## 🏞 Screenshots
 
-Screenshots as of v0.0.11 (Text engine, Menu engine, Sprites engine, some Widgets, part of Map engine, Title, OakSpeech, ...)
+**Screenshots as of v0.1.0**
 
 <img src="./screenshots/title.png" width="360px" height="360px" /> &nbsp;&nbsp; <img src="./screenshots/oak_speech.png" width="360px" height="360px" />
 
 <img src="./screenshots/overworld.png" width="360px" height="360px" /> &nbsp;&nbsp; <img src="./screenshots/status_screen.png" width="360px" height="360px" />
+
+## 🎡 Try
+
+### Download
+
+Please download binary from [Release](https://github.com/pokemium/OpenPokemonRed/releases) page.
+
+### Build
+
+Requirements:
+- Go 1.15
+- Windows10 or MacOS(<= Big Sur)
+
+```sh
+gh repo clone pokemium/OpenPokemonRed
+cd OpenPokemonRed && make build # For Mac OS. If your OS is windows, please `make build-windows`.
+```
+
+## 💻 Key
+
+| keyboard             | game pad      |
+| -------------------- | ------------- |
+| <kbd>&larr;</kbd>    | &larr; button |
+| <kbd>&uarr;</kbd>    | &uarr; button |
+| <kbd>&darr;</kbd>    | &darr; button |
+| <kbd>&rarr;</kbd>    | &rarr; button |
+| <kbd>S</kbd>         | A button      |
+| <kbd>A</kbd>         | B button      |
+| <kbd>Enter</kbd>     | Start button  |
+| <kbd>Right shift</kbd> | Select button |
