@@ -1,5 +1,6 @@
 package util
 
+// Direction the way this go(or don't)
 type Direction = uint
 
 // color
@@ -33,4 +34,5 @@ const (
 	Stay            byte = 0xff
 )
 
+// MaxLevel The level cap for pokemon
 const MaxLevel = 100

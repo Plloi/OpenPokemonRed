@@ -13,6 +13,7 @@ import (
 	ebiten "github.com/hajimehoshi/ebiten/v2"
 )
 
+// Contains Checks list for target
 func Contains(list interface{}, target interface{}) bool {
 	if reflect.TypeOf(list).Kind() == reflect.Slice || reflect.TypeOf(list).Kind() == reflect.Array {
 		listvalue := reflect.ValueOf(list)
@@ -33,26 +34,37 @@ func XOR(a, b bool) bool {
 	return a != b
 }
 
+// ReadBit Gets bit from byte
 func ReadBit(data byte, bit uint) bool {
 	return data>>bit%2 == 1
 }
+
+// SetBit Sets the bit in byte to 1
 func SetBit(data *byte, bit uint) {
 	*data = *data | (1 << bit)
 }
+
+// ResBit Sets the bit in byte to 0
 func ResBit(data *byte, bit uint) {
 	*data = *data & ^(1 << bit)
 }
 
+// BlackScreen Fills target with black
 func BlackScreen(target *ebiten.Image) {
 	target.Fill(color.NRGBA{0x00, 0x00, 0x00, 0xff})
 }
+
+// WhiteScreen Fills target with "white"
 func WhiteScreen(target *ebiten.Image) {
 	target.Fill(color.NRGBA{0xf8, 0xf8, 0xf8, 0xff})
 }
+
+// FillScreen Fills target with (r,b ,b) color
 func FillScreen(target *ebiten.Image, r, g, b byte) {
 	target.Fill(color.NRGBA{r, g, b, 0xff})
 }
 
+// BlackScreenArea Fills target area (x, y, h, w) with black
 func BlackScreenArea(target *ebiten.Image, x, y Tile, h, w int) {
 	width, height := TileToPixel(Tile(w), Tile(h))
 	sheet := ebiten.NewImage(width, height)
@@ -60,7 +72,7 @@ func BlackScreenArea(target *ebiten.Image, x, y Tile, h, w int) {
 	DrawImage(target, sheet, x, y)
 }
 
-// ClearScreenArea clear h×w tiles from (x, y)
+// ClearScreenArea Fills target area (x, y, h, w) with "white"
 func ClearScreenArea(target *ebiten.Image, x, y Tile, h, w uint) {
 	width, height := TileToPixel(Tile(w), Tile(h))
 	sheet := ebiten.NewImage(width, height)
@@ -68,11 +80,13 @@ func ClearScreenArea(target *ebiten.Image, x, y Tile, h, w uint) {
 	DrawImage(target, sheet, x, y)
 }
 
+// DrawPixel Sets (x, y) pixel in target to (r,b ,b) color
 func DrawPixel(target *ebiten.Image, x, y int, r, g, b byte) {
 	clr := color.RGBA{r, g, b, 0xff}
 	target.Set(x, y, clr)
 }
 
+// DrawImage Draws src at x, y in target
 func DrawImage(target, src *ebiten.Image, x, y Tile) {
 	if src == nil {
 		return
